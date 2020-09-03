@@ -18,7 +18,7 @@ I completed the Primers.
 In this new Rmarkdown file, please type a paragraph about what you are hoping to get out of this class. Include at least 3 specific desired learning objectives in list format
 
 \begin{itemize}
-\item To understand how to use R to do proper analysis for given data as well as generate plots
+\item To understand how to use R for analysis
 \item To learn how to display plots based on data more effectively to readers 
 \item To practice to make a well written report using latex
 \end{itemize}
@@ -85,7 +85,7 @@ In this step, there is no many challenges that I can have.
 Please create and include a basic scatter plot and histogram of an internal R dataset.
 
 
-The data "mtcars" was used for creating plots. The data was generated from the 1974 Motor Trend US magazine.The data include fuel consumption and 10 automobiles characteristics of 32 automobiles (1973–74 models).
+The data "mtcars" was used for creating plots. The data was generated from the 1974 Motor Trend US magazine.The data include fuel consumption and 10 automobiles characteristics of 32 automobiles (1973–74 models). No further manipulation of data after loading the dataset.
 
 
 ```{r}
@@ -97,7 +97,7 @@ library(ggplot2)
 
 ggplot()+
   geom_point(aes(x=wt,y=mpg),data=mtcars)+
-  labs(x="Weight (1000 lbs)",y="Miles/(US) gallon",title="The scatter plot of weight and miles")+
+  labs(x="Weight (1000 lbs)",y="Miles/(US) gallon",title="The scatter plot of weight and miles of automobiles in mtcars dataset")+
   theme_minimal()+
     theme(plot.title = element_text(hjust = 0.5))
 ```
@@ -108,10 +108,10 @@ There is negative linear trend between and weight and miles that car travel per 
 ```{r,message=FALSE}
 ggplot()+
   geom_histogram(aes(x=wt),col="blue",data=mtcars)+
-  labs(x="Weight (1000 lbs)",title="The historgram of weight")+
+  labs(x="Weight (1000 lbs)",title="The historgram of weight of automobiles in mctcars dataset")+
   theme_minimal()+
   theme(plot.title = element_text(hjust = 0.5))
   
 ```
-The histogram shows the frequency by weight of 32 observations. 3500lbs has the highest frequency. Weight of most cars are below 4000lbs except 3 cars with higher than 5000lbs.
+The histogram shows the frequency of 32 observations by weight. 3500lbs has the highest frequency. Weight of most cars are below 4000lbs except 3 three cars with higher than 5000lbs.
 
