@@ -40,7 +40,8 @@ return(result)
 
 # read data into R
 ```{r}
-df <- readRDS(file="C:/Users/linal/Desktop/VT2020Fall/stat programming/HW3_data.rds")
+
+df <- readRDS(file="/cloud/project/HW3_data.rds")
 ```
 
 
@@ -175,9 +176,9 @@ rSumVec
 # 
 
 # check whether the sum is within $1e^{-6}$ of the analytical solution
-i=5
-diff[i]=abs(rSumVec[i]-0.8556244)
-diff[i]<0.000001
+
+diff=abs(rSumVec[i]-0.8556244)
+diff<0.000001
 ```
 # Report the various slice widths used, the sum calculated, and the slice width necessary to obtain an answer within $1e^{-6}$ of the analytical solution.
 The various slice widths I used are 0.01,0.001,0.0001,0.00001, and 0.000001 and the sum calculated are 0.86365, 0.85642, 0.85570, 0.85563,and 0.85562. When bandwidh are 0.000001, the sum is within $1e^{-6}$ of the analytical solution
