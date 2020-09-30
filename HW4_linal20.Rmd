@@ -5,6 +5,7 @@ date: "9/30/2020"
 output: pdf_document
 ---
 
+
  
 ```{r, include=FALSE}
 library(ggplot2)
@@ -73,9 +74,16 @@ sumDat <- sumDat[,c(6,1,2,3,4,5)]
 
 ### a. A single table of the means, sd, and correlation for each of the 13 Observers (?kable). From this
 # table, what would you conclude? 
-```{r}  
+```{r} 
+
 knitr::opts_chunk$set(fig.align = 'center')
-kable(sumDat,booktabs = T,caption = "The table of the means, sd, and correlation for each of the 13 Observers") %>% kable_styling(full_width = T)
+
+kable(sumDat,caption = "The table of the means, sd, and correlation for each of the 13 Observers")
+
+
+
+##%>% kable_styling(full_width = T)
+
 ```
 For every observer, the mean measurement of device 1 is larger than the mean measurement of device 2.
 However, the standard deviation of device 2 is larger than the standard deviation of device 1. data points for device2 spread more widely than those of device1.
