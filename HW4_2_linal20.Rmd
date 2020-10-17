@@ -2,11 +2,19 @@
 title: "HW4_2_linal20"
 author: "Lina Lee"
 date: "10/16/2020"
-output: pdf_document
+output: 
+  pdf_document:
+    latex_engine: xelatex
 ---
-```{r}
-library(knitra)
 
+```{r, include=FALSE}
+library(ggplot2)
+library(tidyverse)
+library(gridExtra)
+options(kableExtra.latex.load_packages = FALSE)
+library("kableExtra")
+
+library(ggplot2)
 ```
 
 # problem 2
@@ -21,12 +29,12 @@ lm(h~0+X)
 ```
 
 # problem 3
-Part a. Using a step size of 1e−7 and tolerance of 1e−9, try 10000 different combinations of start
+### Part a. 
+Using a step size of 1e−7 and tolerance of 1e−9, try 10000 different combinations of start
 values for β0 and β1 across the range of possible β’s +/-1 from true determined in Problem 2, making sure to take advantages of parallel computing opportunities. In my try at this, I found starting close to true took 1.1M iterations, so set a stopping rule for 5M. Report the
 min and max number of iterations along with the starting values for those cases. Also report the average and stdev obtained across all 10000 β’s.
 
 ```{r}
-
 # b0range<-seq(1-1,1+1,by=0.02)
 # b0range<-b0range[-1]
 # length(b0range)
@@ -59,6 +67,7 @@ min and max number of iterations along with the starting values for those cases.
 # }
 # stopCluster(cl)
 
+
 load("result.Rdata")
 result<-as.vector(result)
 result.mat<-as.data.frame(matrix(result,nrow=10000,ncol=3, byrow=TRUE))
@@ -68,12 +77,12 @@ head(result.mat)
 
 
 
-# Report the min and max number of iterations along with the starting values for those cases.
+### Report the min and max number of iterations along with the starting values for those cases.
 ```{r}
 result.mat[which.max(result.mat$iterations),]
 result.mat[which.min(result.mat$iterations),]
 ```
-# Also report the average and stdev obtained across all 10000 β’s
+### Also report the average and stdev obtained across all 10000 β’s
 ```{r}
 library(tidyverse)
 result.mat%>%
@@ -82,9 +91,7 @@ result.mat%>%
 ```
 Average and stdev of b0 is 1.007 and 0.557, Average and stdev of b1 is 1.996 and 0.093.
 
-### Part b. What if you were to change the stopping rule to include our knowledge of the true value? Is this a good way to run this algorithm? What is a potential problem? 
 
-### Part c. What are your thoughts on this algorithm?
 
 # Problem 4: Inverting matrices
  so John Cook makes some good points, but if you want to do:
@@ -156,7 +163,8 @@ timing with cholesky decomposition
 The time using cholesky inverse took shorter time than the original way.
  
 # Problem 6
-a. Create a function that computes the proportion of successes in a vector. Use good programming
+### a. 
+Create a function that computes the proportion of successes in a vector. Use good programming
 practices.
 ```{r}
 successProp<-function(vec){
@@ -167,13 +175,15 @@ successProp<-function(vec){
 
 ```
 
-b. Create a matrix to simulate 10 flips of a coin with varying degrees of “fairness” (columns = probability)
+### b.
+Create a matrix to simulate 10 flips of a coin with varying degrees of “fairness” (columns = probability)
 ```{r}
 set.seed(12345)
 P4b_data <- matrix(rbinom(10, 1, prob = (31:40)/100), nrow = 10, ncol = 10, byrow = FALSE)
 
 ```
-c. Use your function in conjunction with apply to compute the proportion of success in P4b_data by
+### c. 
+Use your function in conjunction with apply to compute the proportion of success in P4b_data by
 column and then by row. What do you observe? What is going on?
 ```{r}
 # by row
@@ -229,7 +239,8 @@ library(tidyverse)
 ```
 
 
-### 1. create a function that accepts a dataframe of values, title, and x/y labels and creates a scatter plot
+### 1. 
+create a function that accepts a dataframe of values, title, and x/y labels and creates a scatter plot
 ```{r}
 
 names(df)<-c("obs","x","y")
@@ -318,12 +329,9 @@ cityNtbl<-cityN
 names(cityNtbl)<-c("State","Number of Cities")
 
 knitr::opts_chunk$set(fig.align = 'center')
+kable(cityNtbl,caption = "A summary table of the number of cities by state")
 ```
 
-A summary table of the number of cities by state
-```{r}
-cityNtbl
-```
 ### Part c. 
 Create a function that counts the number of occurances of a letter in a string. The input to the function should be “letter” and “state_name”. The output should be a scalar with the count for that letter.
 ```{r}
@@ -378,7 +386,7 @@ states_sub<-states%>%filter(states_highlighted==TRUE)
 
 ```
 
-Part d.
+### Part d.
 Create 2 maps to finalize this. Map 1 should be colored by count of cities on our list within the state. Map 2 should highlight only those states that have more than 3 occurances of ANY letter in thier name. Quick and not so dirty map:
 #https://cran.r-project.org/web/packages/fiftystater/vignettes/fiftystater.html
 
@@ -415,8 +423,10 @@ ggplot(map, aes(long, lat, group = group))+
 ### Part a. 
 First, the question asked in the stackexchange was why is the supplied code not working. This question was actually never answered. What is the problem with the code? If you want to duplicate the code to test it, use the quantreg package to get the data.
 
+That is because the person used set.seed(). set.seed with the same starting number produce same results
+he should not use set.seed() to produce different resamples of original data.
 
-# Part b. 
+### Part b. 
 Bootstrap the analysis to get the parameter estimates using 100 bootstrapped samples.
 Make sure to use system.time to get total time for the analysis. You should probably make
 sure the samples are balanced across operators, ie each sample draws for each operator.
