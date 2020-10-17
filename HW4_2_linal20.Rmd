@@ -4,8 +4,11 @@ author: "Lina Lee"
 date: "10/16/2020"
 output: pdf_document
 ---
+```{r}
+library(knitra)
 
-I will modify this more. I upload ths now just in case
+```
+
 # problem 2
 ```{r}
 set.seed(1256)
@@ -34,8 +37,6 @@ min and max number of iterations along with the starting values for those cases.
 # input_grid<-expand.grid(b0range,b1range)
 # m=length(X[,1])
 # 
-# 
-# 
 # library(parallel)
 # library(doParallel)
 # library(tidyverse)
@@ -43,60 +44,47 @@ min and max number of iterations along with the starting values for those cases.
 # cl<-makeCluster(cores)
 # registerDoParallel(cl)
 # 
-# # dim(input_grid)
+# dim(input_grid)
 # 
-# 
-# a=10**(-7) 
-# t=10**(-9)
-# theta_new<-array(rep(NA,2),dim=c(2,1))
-# theta<-array(rep(NA,2),dim=c(2,1))
-# 
-# 
-# 
-# 
-# remove(result)
-# 
-# result2<-foreach(j = 1, .combine='c')%dopar%{
-# 
-#   j=1
-#   theta[1]=input_grid$Var1[j]
-#   theta[2]=input_grid$Var2[j]
+# a=10^(−7) 
+# t=10^(-9)
+# result<-foreach(i = 1:10000, .combine='c')%dopar%{
+# theta0_new=input_grid$Var1[i]
+# theta1_new=input_grid$Var2[i]
+# while(abs(theta0_new -theta0)>t & abs(theta1_new-theta1 &j)>t){
 #   
-# 
-#   theta_new[1]<-theta[1]-a*(1/m)*t(one)%*%(X%*%theta-h)
-#   theta_new[2]<-theta[2]-a*(1/m)*t(X[,2])%*%(X%*%theta-h)
-#   
-#   
-# i=1
-#   while(abs(theta_new[1] -theta[1])>t & abs( theta_new[2]-theta[2])>t & i<5*10^6){
-#     theta<-theta_new
-#     theta_new[1]<-theta[1]-a*(1/m)*t(one)%*%(X%*%theta-h)
-#     theta_new[2]<-theta[2]-a*(1/m)*t(X[,2])%*%(X%*%theta-h)
-#     
-#     i=i+1
-#   }
-#   theta0_L<-theta_new[1]
-#   theta1_L<-theta_new[2]
-#   finalL<-c(i,theta0_L,theta1_L)
-#   return(finalL)
+# theta0_new <-theta0-a*(1/m)*t(one)%*%(X%*%theta-h)
+# theta1_new <-theta1-a*(1/m)*t(X[,2])%*%(X%*%theta-h)
+# }
 # }
 # stopCluster(cl)
-# head(result)
-# 
-# setwd("C:\\Users\\linal\\Desktop\\VT2020Fall\\stat programming")
-# 
-# save(result, file = "result.RData")
 
+load("result.Rdata")
+result<-as.vector(result)
+result.mat<-as.data.frame(matrix(result,nrow=10000,ncol=3, byrow=TRUE))
+names(result.mat)<-c("iterations","beta0","beta1")
+head(result.mat)
 ```
 
-### it takes so long time to run the code, so I did in my local computer and I did not run the code in rMarkdown.
 
-Part b. What if you were to change the stopping rule to include our knowledge of the true value? Is this a good way to run this algorithm? What is a potential problem? 
 
-No, There can be several true values. we may miss some true value.
+# Report the min and max number of iterations along with the starting values for those cases.
+```{r}
+result.mat[which.max(result.mat$iterations),]
+result.mat[which.min(result.mat$iterations),]
+```
+# Also report the average and stdev obtained across all 10000 β’s
+```{r}
+library(tidyverse)
+result.mat%>%
+  summarise(avgb0=mean(beta0),stdevb0=sd(beta0) ,avgb1=mean(beta1),stdevb1=sd(beta1))
 
-Part c. What are your thoughts on this algorithm?
+```
+Average and stdev of b0 is 1.007 and 0.557, Average and stdev of b1 is 1.996 and 0.093.
 
+### Part b. What if you were to change the stopping rule to include our knowledge of the true value? Is this a good way to run this algorithm? What is a potential problem? 
+
+### Part c. What are your thoughts on this algorithm?
 
 # Problem 4: Inverting matrices
  so John Cook makes some good points, but if you want to do:
@@ -113,40 +101,32 @@ $\hat{\beta} = {(X^TX)}^{−1}X^{T}y$ is the least square estimator of $\beta$. 
 $y = p + AB^{−1}*(q − r)$ 
 Where A, B, p, q and r are formed by:
 
-### it takes so long time to run the code for problem5, so I did in my local computer and I did not run the code in rMarkdown.
-
-```{r,cha}
-# set.seed(12456)
-# G <- matrix(sample(c(0,0.5,1),size=16000,replace=T),ncol=10)
-# R <- cor(G) # R: 10 * 10 correlation matrix of G
-# C <- kronecker(R, diag(1600)) # C is a 16000 * 16000 block diagonal matrix
-# id <- sample(1:16000,size=932,replace=F)
-# q <- sample(c(0,0.5,1),size=15068,replace=T) # vector of length 15068
-# A <- C[id, -id] # matrix of dimension 932 * 15068
-# B <- C[-id, -id] # matrix of dimension 15068 * 15068
-# p <- runif(932,0,1)
-# r <- runif(15068,0,1)
-# C<-NULL #save some memory space
+```{r,cache=TRUE}
+set.seed(12456)
+G <- matrix(sample(c(0,0.5,1),size=16000,replace=T),ncol=10)
+R <- cor(G) # R: 10 * 10 correlation matrix of G
+C <- kronecker(R, diag(1600)) # C is a 16000 * 16000 block diagonal matrix
+id <- sample(1:16000,size=932,replace=F)
+q <- sample(c(0,0.5,1),size=15068,replace=T) # vector of length 15068
+A <- C[id, -id] # matrix of dimension 932 * 15068
+B <- C[-id, -id] # matrix of dimension 15068 * 15068
+p <- runif(932,0,1)
+r <- runif(15068,0,1)
+C<-NULL #save some memory space
 ```
 
 ### Part a.
 How large (bytes) are A and B? Without any optimization tricks, how long does the it take to calculate y?
-```{r}
-# object.size(A)
-# object.size(B)
-# 
-# Prob5part_a<-system.time({y = p + A%*%solve(B)%*%(q - r)})
-# names(Prob5part_a)<-"timing without cholesky decomposition"
-# Prob5part_a
+```{r,cache=TRUE}
+object.size(A)
+object.size(B)
+
+Prob5part_a<-system.time({y = p + A%*%solve(B)%*%(q − r)})
+names(Prob5part_a)<-"timing without cholesky decomposition"
+Prob5part_a
 ```
+size of A is 112347224 bytes and the size of B is 1816357208 bytes. It takes to calculate y without any optimization tricks.
 
-size of A is 112347224 bytes and the size of B is 1816357208 bytes.  
-
-timing without cholesky decomposition  
-   user  system elapsed   
- 781.67   14.56  799.17   
- 
-It takes to calculate y without any optimization tricks.
 
 ### Part b.
 How would you break apart this compute, i.e., what order of operations would make sense? Are there any mathmatical simplifications you can make? Is there anything about the vectors or matrices we might take advantage of?
@@ -160,10 +140,10 @@ Since the matrix is positive definite matrix, we can apply Cholesky decompositio
 ### Part c.
 Use ANY means (ANY package, ANY trick, etc) necessary to compute the above, fast. Wrap your code in
 “system.time({})”, everything you do past assignment “C <- NULL”.
-```{r}
+```{r,cache=TRUE}
 
-# Prob5part_b<-system.time({y = p + A%*%chol2inv(B, size = NCOL(B), LINPACK = FALSE)%*%(q - r)})
-# names(Prob5part_b)<-"timing with cholesky decomposition"
+Prob5part_b<-system.time({y = p + A%*%chol2inv(B, size = NCOL(B), LINPACK = FALSE)%*%(q − r)})
+names(Prob5part_b)<-"timing with cholesky decomposition"
 ```
 
 timing without cholesky decomposition
@@ -176,7 +156,7 @@ timing with cholesky decomposition
 The time using cholesky inverse took shorter time than the original way.
  
 # Problem 6
-### a. Create a function that computes the proportion of successes in a vector. Use good programming
+a. Create a function that computes the proportion of successes in a vector. Use good programming
 practices.
 ```{r}
 successProp<-function(vec){
@@ -187,13 +167,13 @@ successProp<-function(vec){
 
 ```
 
-### b. Create a matrix to simulate 10 flips of a coin with varying degrees of “fairness” (columns = probability)
+b. Create a matrix to simulate 10 flips of a coin with varying degrees of “fairness” (columns = probability)
 ```{r}
 set.seed(12345)
 P4b_data <- matrix(rbinom(10, 1, prob = (31:40)/100), nrow = 10, ncol = 10, byrow = FALSE)
 
 ```
-### c. Use your function in conjunction with apply to compute the proportion of success in P4b_data by
+c. Use your function in conjunction with apply to compute the proportion of success in P4b_data by
 column and then by row. What do you observe? What is going on?
 ```{r}
 # by row
@@ -213,11 +193,7 @@ marginal successes.
 
 ```{r}
 
-# P4b_data <- matrix(NA,nrow = 10, ncol = 10, byrow = FALSE)
-# for(j in 1:10){
-# P4b_data [,j]<-rbinom(10, 1, prob = (31:40)/100)
-# }
-# P4b_data 
+
 
  prob <- (31:40)/100
 
@@ -247,8 +223,7 @@ Observers”. Where the device measurements were in columns “dev1” and “de
 change the names of “dev1” and “dev2” to x and y and do the following:
 
 ```{r,message=FALSE}
-
-df <- readRDS(file="/cloud/project/HW3_data.rds")
+df <- readRDS(file="C:/Users/linal/Desktop/VT2020Fall/stat programming/HW3_data.rds")
 library(ggplot2)
 library(tidyverse)
 ```
@@ -343,8 +318,11 @@ cityNtbl<-cityN
 names(cityNtbl)<-c("State","Number of Cities")
 
 knitr::opts_chunk$set(fig.align = 'center')
+```
 
-kable(cityNtbl,caption = "A summary table of the number of cities by state")
+A summary table of the number of cities by state
+```{r}
+cityNtbl
 ```
 ### Part c. 
 Create a function that counts the number of occurances of a letter in a string. The input to the function should be “letter” and “state_name”. The output should be a scalar with the count for that letter.
@@ -400,14 +378,10 @@ states_sub<-states%>%filter(states_highlighted==TRUE)
 
 ```
 
-### Part d.
+Part d.
 Create 2 maps to finalize this. Map 1 should be colored by count of cities on our list within the state. Map 2 should highlight only those states that have more than 3 occurances of ANY letter in thier name. Quick and not so dirty map:
 #https://cran.r-project.org/web/packages/fiftystater/vignettes/fiftystater.html
-```{r,echo=FALSE}
-library(ggplot2)
-library(maps)
 
-```
 ```{r}
 
 states_map <- map_data("state")
@@ -442,7 +416,7 @@ ggplot(map, aes(long, lat, group = group))+
 First, the question asked in the stackexchange was why is the supplied code not working. This question was actually never answered. What is the problem with the code? If you want to duplicate the code to test it, use the quantreg package to get the data.
 
 
-### Part b. 
+# Part b. 
 Bootstrap the analysis to get the parameter estimates using 100 bootstrapped samples.
 Make sure to use system.time to get total time for the analysis. You should probably make
 sure the samples are balanced across operators, ie each sample draws for each operator.
@@ -520,13 +494,10 @@ kable(coef_final,caption = "The bootstrapped coefficient of regression")
 
 
 ### Part c. Redo the last problem but run the bootstraps in parallel (cl <- makeCluster(8)), don’t forget to stopCluster(cl)). Why can you do this? Make sure to use system.time to get total time for the analysis.
-```{r,echo=FALSE}
+```{r}
 library(parallel)
 library(doParallel)
 library(tidyverse)
-```
-
-```{r}
 cores<-detectCores()-1
 cl<-makeCluster(cores)
 registerDoParallel(cl)
@@ -551,13 +522,13 @@ Since we use several clusters to run the bootstrap, it takes shorter time than t
 
 Create a single table summarizing the results and timing from part a and b. What are your thoughts?
 ```{r}
+remove(time)
+time<-rbind(time_a,time_b)
+time<-time[,c(1,2,3)]
 
-# time<-rbind(time_a,time_b)
-# time<-time[,c(1,2,3)]
-# 
-# 
-# names(time)= "timing from part a and b"
-# time
+knitr::opts_chunk$set(fig.align = 'center')
+
+kable(time,caption = "timing from part a and b")
 ```
 
 # Problem 10
