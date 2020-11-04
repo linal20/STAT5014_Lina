@@ -133,8 +133,13 @@ x<-1:9
 #plot diagnostics with base R plot
 par(mfrow=c(2,3))
 plot(x=yhat,y=Edres,xlab="Predicted Value", ylab="Residual")
+abline(h=0)
 plot(x=yhat,y=rst,xlab="Predicted Value", ylab="Rstudent")
+abline(h=2)
+abline(h=-2)
 plot(x=lev,y=rst,xlab="Leverage", ylab="Rstudent")
+abline(h=2)
+abline(h=-2)
 qqplot(q,Edres,xlab="Quantile", ylab="Residual")
 abline(0,0.12/3)
 plot(x=yhat,y=y,xlab="Predicted Value", ylab="y")
@@ -150,12 +155,15 @@ you will probably find an extension to the ggplot2 functionality will do exactly
 #plot diagnostics with ggplot
 p1<-ggplot()+
   geom_point(aes(x=yhat,y=Edres))+
+  geom_abline(intercept = 0, slope = 0)+
   labs(x="Predicted Value",y="Residual")+
   theme_bw()
 
 
 p2<-ggplot()+
   geom_point(aes(x=yhat,y=rst))+
+  geom_abline(intercept = 2, slope = 0)+
+  geom_abline(intercept = -2, slope = 0)+
   labs(x="Predicted Value",y="Rstudent")+
   theme_bw()
 
